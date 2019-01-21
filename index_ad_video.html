@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="flowplayer/flowplayer-3.2.8.min.js" type="text/javascript"></script>
+    <script src="js/jquery-1.12.4.min.js" type="text/javascript"></script>
+    <meta charset="utf-8" content="”text/html;" http-equiv="”Content-Type”">
+    <title>zhenhua</title>
+  </head>
+  <body>
+    <div class="message" id="error_message">接口返回异常～请速联系开发人员！</div>
+    <div class="main_div">
+      <div class="video_div"> <!-- http://172.20.10.5:3000/keep.mp4 -->
+        <div class="video_first_div" id="video_div_first" style="position: relative;">
+          <div style="width:100%;height:100%; position: absolute;">
+            <img alt="Smiley face" height="100%" id="image_ad_1" src="" style="background-size:contain; background-attachment: fixed;" width="100%">
+          </div>
+          <div style="width:100%;height:100%; position: absolute; background: #095a92;">
+            <video muted autoplay loop src="http://10.222.25.185:3000/keep.mp4" style=" width:100%; height:100%;">您的浏览器不支持 video 标签。</video>
+          </div>
+        </div>
+        <div class="video_info_div">
+          <div style="height: 100%;">
+            <div style="height: 75%;background: #107fc6; ">
+              <div style="padding: 5%; bottom: 0px;height: 95%;">
+                <div class="notice_span" style="margin-top: 30%">剩余车位:</div>
+                <div class="notice_span">
+                  <text>SUV :</text>
+                  <text class="notice_span_num" id="suv"></text><br>
+                </div>
+                <div class="notice_span">
+                  <text >轿车 :</text>
+                  <text class="notice_span_num" id="cars"></text></br>
+                </div>
+                </br>
+              </div>
+            </div>
+            <div style="height: 2%; background: #176cad;"></div>
+            <div style="height: 23%;background: #095a92;">
+              <div style="text-align: center; height: 100%; position: relative;">
+                <div style="text-align: center; width: 100%; height: 120px;margin: 0% auto; position: absolute; bottom: 0; top: 50%; margin-top: -60px;">
+                  <p class="date_style" id="current_date"></p>
+                  <p class="date_style" id="current_week"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom_div">
+        <div class="bottom_inner_div">
+          <div class="notice_div">
+            <img src="images/logo.png" style="padding: 5px;" width="90%" height="100%"></img>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      var total_data = {};
+      var timer_car_num;
+      var timer_switch_ad;
+      $.ajax({
+        type: 'get',
+        url: 'http://10.222.25.185:3000/api/v1/pragrams',
+        success: function(data){
+          document.getElementById("error_message").style.display="none";//隐藏
+          total_data = data;
+          document.getElementById("image_ad_1").src = 'http://10.222.26.171:3000'+data.data[0].attachment.url;
+          document.getElementById("content_1").innerHTML = data.data[0].name;
+          function_frash();
+          timer_switch_ad = setInterval(function_frash, 5000);
+          park_num();
+          timer_car_num = setInterval(park_num, 5000)
+        },
+        error:function(){
+          document.getElementById("error_message").style.display="block";//显示
+        }
+      });
+      var date = new Date();  //创建对象  
+      var y = date.getFullYear();     //获取年份  
+      var m =date.getMonth()+1;   //获取月份  返回0-11  
+      var d = date.getDate(); // 获取日  
+      var w = date.getDay();   //获取星期几  返回0-6   (0=星期天) 
+      var ww = ' 星期'+'日一二三四五六'.charAt(new Date().getDay()) ;//星期几
+      document.getElementById("current_date").innerHTML =  y+"年 "+m+"月 "+d+"日";
+      document.getElementById("current_week").innerHTML =  ww;
+      //document.write(y+"-"+m+"-"+d+"   "+h+":"+minute+":"+s);  
+      function park_num(){
+        $.ajax({
+          type: 'get',
+          url: 'http://10.222.25.185:3000/api/v1/parkingstates/index',
+          success: function(data){
+            document.getElementById("error_message").style.display="none";//隐藏
+            document.getElementById("suv").innerHTML = data.data.suv_available;
+            document.getElementById("cars").innerHTML = data.data.car_available;
+          },
+          error:function(){
+            document.getElementById("error_message").style.display="block";//显示
+          }
+        });
+      };
+      // park_num();
+      var timer_car_num = setInterval(park_num, 2000);
+      function switch_screen(){
+        $.ajax({
+          type: 'get',
+          url: 'http://10.222.25.185:3000/api/v1/screens/show',
+          success: function(data){
+            document.getElementById("error_message").style.display="none";//隐藏
+            if(data.data.state=='3'){
+              console.log('333333333');
+            }else if(data.data.state=='2'){
+              clearInterval(timer_car_num);
+              clearInterval(timer_switch_ad);
+              javascript:location.href='index_full_screen.html';
+            }else if(data.data.state=='1'){
+              clearInterval(timer_car_num);
+              clearInterval(timer_switch_ad);
+              javascript:location.href='index.html';
+            }else if(data.data.state=='4'){
+              clearInterval(timer_car_num);
+              clearInterval(timer_switch_ad);
+              javascript:location.href='index_desc.html';
+            }
+          },
+          error:function(){
+            document.getElementById("error_message").style.display="block";//显示
+          }
+        });
+      };
+      // switch_screen();
+      var timer_switch_ad = setInterval(switch_screen, 2000);
+    </script>
+  </body>
+  <style type="text/css">
+    html {
+      height:100%;
+      margin:0;
+    }
+    body {
+      overflow-y: hidden;
+      font-size: .80em;
+      font-family: "HelveticaNeue","LucidaGrande","SegoeUI",Arial, Helvetica, Verdana, sans-serif;
+      color: #696969;
+      margin: 0 auto;
+      padding: 0;
+      height: 100%;
+    }
+    .message{
+      width: 40%; 
+      min-width: 180px; 
+      background: #fff; 
+      opacity: 0.6; 
+      height: auto;
+      min-height: 40px; 
+      color: #4a4a4a; 
+      line-height: 40px; 
+      text-align: center; 
+      border-radius: 4px; 
+      position: fixed; 
+      top: 2%; 
+      left: 30%; 
+      z-index: 999999; 
+      font-size: 20px; 
+      display: none;
+    }
+    .main_div{
+      height: 100%; 
+      width: 100%;
+      background: #176cad;
+    }
+    .video_div{
+      width: 100%;
+      height: 80%; 
+      background: #176cad;
+    }
+    .video_first_div{
+      height: 96.5%; 
+      width: 73.5%; 
+      background: #176cad; 
+      float: left; 
+      margin: 1% 0.5% 0px 1%;
+    }
+    .video_info_div{
+      height: 96.5%; 
+      width: 23.5%; 
+      background: #176cad;
+      float: right;
+      padding: 1% 1% 0px 0.5%;
+    }
+    .bottom_div{
+      height: 18.8%;
+    }
+    .bottom_inner_div{
+      height: 100%;
+      background: #fff;
+      margin: 0.5% 2px 2px 2px;
+    }
+    .notice_div{
+      height: 100%; 
+      width: 100%; 
+      float: left; 
+      position: relative;
+      text-align: center;
+    }
+    .notice_span{
+      font-size: 3vw; 
+      color: #FFF;  
+      position: relative;
+      height: 25%;
+      line-height: 30%;
+    }
+    .notice_span_num{
+      font-size: 3.5vw; 
+      color: #21cb06;
+    }
+    .date_style{
+      color: #FFF; 
+      font-size: 32px; 
+      margin: 0;
+      height: 60px;
+      line-height: 60px;
+    }
+    .week_style{
+      color: #FFF; 
+      font-size: 2vw;
+    }
+  </style>
+</html>

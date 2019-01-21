@@ -1,0 +1,180 @@
+<!DOCTYPE html> 
+<html> 
+    <head> 
+        <script type="text/javascript" src="flowplayer/flowplayer-3.2.8.min.js"></script>
+        <meta http-equiv=”Content-Type” content=”text/html; charset=gb2312″>
+        <title>zhenhua</title> 
+    </head> 
+    <body>
+        <div class="main_div">
+            <div class="video_div">
+                <div class="video_first_div" id="video_div_first">
+                    <a 
+                        href="#" 
+                        style="display:block; width:100%; height:100%"   
+                        id="player1">  
+                    </a>
+                </div>
+                <div class="video_second_div">
+                    <a 
+                        href="#" 
+                        style="display:block; width:100%; height:100%"   
+                        id="player2">  
+                    </a>
+                </div>
+            </div>
+            <div class="bottom_div">
+              <div class="bottom_inner_div">
+                <div class="notice_div">
+                    <p id="borde_name" style="font-size: 100px; height: 100%;">6号车板</p>
+                </div>
+                <div class="img_div">
+                    <img id="direction_arrow" class="img_direction" src="images/arrow_down.png">
+                </div>
+              </div>
+            </div>
+        </div>
+        <script> 
+          var video_first_url = "rtmp://pull-g.kktv8.com/livekktv/100987038"
+          var video_second_url = "rtmp://live.hkstv.hk.lxdns.com/live/hks"
+          flowplayer("player1", "flowplayer/flowplayer-3.2.18.swf",{  
+              clip: {  
+                  url: video_first_url,
+                  provider: 'rtmp', 
+                  live: true, 
+              },   
+              plugins: {   
+                  rtmp: {   
+                      url: 'flowplayer/flowplayer.rtmp-3.2.8.swf',   
+                      netConnectionUrl: 'rtmp://pull-g.kktv8.com/livekktv/100987038'
+                  }  
+             }  
+          }); 
+          flowplayer("player2", "flowplayer/flowplayer-3.2.18.swf",{  
+              clip: {  
+                  url: video_second_url,
+                  provider: 'rtmp', 
+                  live: true,
+              },   
+              plugins: {   
+                  rtmp: {   
+                      url: 'flowplayer/flowplayer.rtmp-3.2.8.swf',   
+                      netConnectionUrl: 'rtmp://live.hkstv.hk.lxdns.com/live/hks'
+                  }  
+             }  
+          });
+          var i = 0;
+          var url_test = document.getElementById('player1');
+          var borde_name = document.getElementById('borde_name');
+          var arrow_image = document.getElementById('direction_arrow');
+          var video_div_first = document.getElementById('video_div_first')
+          function function_frash(){
+            if(i%2==0){
+              flowplayer("player1", "flowplayer/flowplayer-3.2.18.swf",{  
+                  clip: {  
+                      url: "rtmp://pull-g.kktv8.com/livekktv/100987038",
+                      provider: 'rtmp', 
+                      live: true, 
+                  },   
+                  plugins: {   
+                      rtmp: {   
+                          url: 'flowplayer/flowplayer.rtmp-3.2.8.swf',   
+                          netConnectionUrl: 'rtmp://pull-g.kktv8.com/livekktv/100987038'
+                      }  
+                 }  
+              });
+              borde_name.innerHTML = "18号车板";
+              arrow_image.src = "images/arrow_up.png";
+            }else{
+              flowplayer("player1", "flowplayer/flowplayer-3.2.18.swf",{  
+                  clip: {  
+                      url: "rtmp://live.hkstv.hk.lxdns.com/live/hks",
+                      provider: 'rtmp', 
+                      live: true, 
+                  },   
+                  plugins: {   
+                      rtmp: {   
+                          url: 'flowplayer/flowplayer.rtmp-3.2.8.swf',   
+                          netConnectionUrl: 'rtmp://pull-g.kktv8.com/livekktv/100987038'
+                      }  
+                 }  
+              });
+              borde_name.innerHTML = "6号车板";
+              arrow_image.src = "images/arrow_down.png";
+            }
+            i++
+          };
+          function_frash();
+          var timer = setInterval(function_frash, 5000);
+
+          // setTimeout("javascript:location.href='index_full_screen.html'", 5000); //测试跳转到全屏幕测试
+        </script>
+    </body>
+
+    <style type="text/css">
+        html {
+            height:100%;
+            margin:0;
+        }
+        body {
+            font-size: .80em;
+            font-family: "HelveticaNeue","LucidaGrande","SegoeUI",Arial, Helvetica, Verdana, sans-serif;
+            color: #696969;
+            margin: 0 auto;
+            padding: 0;
+            height: 100%;
+        }
+        .main_div{
+            height: 100%; 
+            width: 100%;
+            background: #e3e3e3;
+        }
+        .video_div{
+            height: 55%; 
+            background: #e3e3e3;
+        }
+        .video_first_div{
+            height: 95%; 
+            width: 49%; 
+            background: #e3e3e3; 
+            float: left; 
+            padding: 10px 5px 0px 10px;
+        }
+        .video_second_div{
+            height: 95%; 
+            width: 49%; 
+            background: #e3e3e3; 
+            float: right;
+            padding: 10px 10px 0px 5px;
+        }
+        .bottom_div{
+            height: 44%;
+        }
+        .bottom_inner_div{
+          height: 100%;
+          background: #FFFFFF;
+          margin: 0px 10px 10px 10px;
+        }
+        .notice_div{
+            height: 50%; 
+            width: 50%; 
+            float: left; 
+            text-align: center;
+        }
+        .img_div{
+            height: 100%; 
+            width: 50%; 
+            float: right; 
+            position: relative;
+        }
+        .img_direction{
+            height: 200px;
+            width: 200px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -100px; /* 高度的一半 */
+            margin-left: -100px; /* 宽度的一半 */
+        }
+    </style>
+</html> 
